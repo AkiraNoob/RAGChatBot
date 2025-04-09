@@ -1,13 +1,11 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { cx } from 'classix';
 import { SparklesIcon } from './icons';
 import { Markdown } from './markdown';
-import { message } from "../../interfaces/interfaces"
+import { message } from '../../interfaces/interfaces';
 import { MessageActions } from '@/components/custom/actions';
 
-export const PreviewMessage = ({ message }: { message: message; }) => {
-
+export const PreviewMessage = ({ message }: { message: message }) => {
   return (
     <motion.div
       className="w-full mx-auto max-w-3xl px-4 group/message"
@@ -33,9 +31,7 @@ export const PreviewMessage = ({ message }: { message: message; }) => {
             </div>
           )}
 
-          {message.role === 'assistant' && (
-            <MessageActions message={message} />
-          )}
+          {message.role === 'assistant' && <MessageActions message={message} />}
         </div>
       </div>
     </motion.div>
