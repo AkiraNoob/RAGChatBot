@@ -1,22 +1,23 @@
-import { ChatInput } from '@/components/custom/chatinput';
+import { ChatInput } from "@/components/custom/chatinput";
 import {
   PreviewMessage,
   ThinkingMessage,
-} from '../../components/custom/message';
-import { useScrollToBottom } from '@/components/custom/use-scroll-to-bottom';
-import { useState, useRef } from 'react';
-import { message } from '../../interfaces/interfaces';
-import { Overview } from '@/components/custom/overview';
-import { Header } from '@/components/custom/header';
-import { v4 as uuidv4 } from 'uuid';
+} from "../../components/custom/message";
+import { useScrollToBottom } from "@/components/custom/use-scroll-to-bottom";
+import { useState, useRef } from "react";
+import { message } from "../../interfaces/interfaces";
+import { Overview } from "@/components/custom/overview";
+import { Header } from "@/components/custom/header";
+import { v4 as uuidv4 } from "uuid";
+import ChatTyping from "@/components/custom/chat-typing";
 
-const socket = new WebSocket('ws://localhost:8000/chat');
+const socket = new WebSocket("ws://localhost:8000/chat");
 
 export function Chat() {
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
   const [messages, setMessages] = useState<message[]>([]);
-  const [question, setQuestion] = useState<string>('');
+  const [question, setQuestion] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const messageHandlerRef = useRef<((event: MessageEvent) => void) | null>(
@@ -25,13 +26,13 @@ export function Chat() {
 
   const cleanupMessageHandler = () => {
     if (messageHandlerRef.current && socket) {
-      socket.removeEventListener('message', messageHandlerRef.current);
+      socket.removeEventListener("message", messageHandlerRef.current);
       messageHandlerRef.current = null;
     }
   };
 
   async function handleSubmit(text?: string) {
-    console.log('handleSubmit', text, question);
+    console.log("handleSubmit", text, question);
     if (!socket || socket.readyState !== WebSocket.OPEN || isLoading) return;
 
     const messageText = text || question;
@@ -41,9 +42,9 @@ export function Chat() {
     const traceId = uuidv4();
     setMessages((prev) => [
       ...prev,
-      { content: messageText, role: 'user', id: traceId },
+      { content: messageText, role: "user", id: traceId },
     ]);
-    setQuestion('');
+    setQuestion("");
 
     const requestPayload = {
       prompt: messageText,
@@ -51,14 +52,14 @@ export function Chat() {
 
     socket.send(JSON.stringify(requestPayload));
 
-    let fullResponse = '';
+    let fullResponse = "";
 
     const messageHandler = (event: MessageEvent) => {
-      if (event.data === '[END]') {
+      if (event.data === "[END]") {
         setIsLoading(false);
         setMessages((prev) => [
           ...prev,
-          { content: fullResponse, role: 'assistant', id: traceId },
+          { content: fullResponse, role: "assistant", id: traceId },
         ]);
         cleanupMessageHandler();
         return;
@@ -69,7 +70,7 @@ export function Chat() {
         if (parsed.output) {
           fullResponse += parsed.output;
         } else if (parsed.error) {
-          console.error('Backend error:', parsed.error);
+          console.error("Backend error:", parsed.error);
         }
       } catch {
         // In case the response isn't JSON (fallback)
@@ -78,7 +79,7 @@ export function Chat() {
     };
 
     messageHandlerRef.current = messageHandler;
-    socket.addEventListener('message', messageHandler);
+    socket.addEventListener("message", messageHandler);
   }
 
   return (
@@ -92,7 +93,7 @@ export function Chat() {
         {messages.map((message, index) => (
           <PreviewMessage key={index} message={message} />
         ))}
-        {isLoading && <ThinkingMessage />}
+        {isLoading && <ChatTyping />}
         <div
           ref={messagesEndRef}
           className="shrink-0 min-w-[24px] min-h-[24px]"

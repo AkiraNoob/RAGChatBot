@@ -1,0 +1,33 @@
+@keyframes typing {
+  0% {
+    background-color: #3f3f46;
+    height: 6px !important;
+    weight: 6px !important;
+  }
+
+  33% {
+    background-color: #e6e6e6;
+    height: 8px !important;
+    weight: 8px !important;
+  }
+
+  100% {
+    background-color: #3f3f46;
+    height: 6px !important;
+    weight: 6px !important;
+  }
+}
+
+.chat_typing_circle_1 {
+  animation: typing 900ms linear infinite;
+}
+
+.chat_typing_circle_2 {
+  animation: typing 900ms linear infinite;
+  animation-delay: 297ms;
+}
+
+.chat_typing_circle_3 {
+  animation: typing 900ms linear infinite;
+  animation-delay: 594ms;
+}
