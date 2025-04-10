@@ -33,7 +33,7 @@ export function Chat() {
 
   async function handleSubmit(text?: string) {
     console.log("handleSubmit", text, question);
-    if (!socket || socket.readyState !== WebSocket.OPEN || isLoading) return;
+    // if (!socket || socket.readyState !== WebSocket.OPEN || isLoading) return;
 
     const messageText = text || question;
     setIsLoading(true);
@@ -89,11 +89,12 @@ export function Chat() {
         className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4"
         ref={messagesContainerRef}
       >
-        {messages.length == 0 && <Overview />}
         {messages.map((message, index) => (
           <PreviewMessage key={index} message={message} />
         ))}
-        {isLoading && <ChatTyping />}
+        {isLoading && (
+          <ChatTyping className="w-full mx-auto max-w-3xl px-4 group/message" />
+        )}
         <div
           ref={messagesEndRef}
           className="shrink-0 min-w-[24px] min-h-[24px]"
